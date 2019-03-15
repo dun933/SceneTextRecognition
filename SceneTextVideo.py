@@ -94,21 +94,22 @@ class SceneTextVideo(SceneTextImage.SceneTextImage):
 
             indexes = nms.nms.polygons(polys, confidences, nms_threshold=self.nms_threshold)
 
-            self.nmspolys = np.array(np.array(polys)[indexes] * reshape_ratio, np.int32)
-            self.nmsscores = np.array(confidences)[indexes]
+            if indexes:
+                self.nmspolys = np.array(np.array(polys)[indexes] * reshape_ratio, np.int32)
+                self.nmsscores = np.array(confidences)[indexes]
 
-            cv2.polylines(frame, self.nmspolys, True, (0,0,255), 1)
+                cv2.polylines(frame, self.nmspolys, True, (0,0,255), 1)
+
             cv2.imshow(self.winName, frame)
-
-            fps.update()
-
             key = cv2.waitKey(1) & 0xFF
+            fps.update()
             elapsed = time.time() - starttime
             if self.frameskip:
                 vs.set(cv2.CAP_PROP_POS_FRAMES, vs.get(cv2.CAP_PROP_POS_FRAMES) + elapsed // self.spf)
             # if 'q' key pressed, break from the loop
             if key == ord("q"):
                 break
+
         fps.stop()
         print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
         print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))

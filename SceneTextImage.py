@@ -120,9 +120,11 @@ class SceneTextImage:
 
         indexes = nms.nms.polygons(polys, confidences, nms_threshold=self.nms_threshold)
 
-
-        self.nmspolys = np.array(np.array(polys)[indexes] * reshape_ratio, np.int32)
-        self.nmsscores = np.array(confidences)[indexes]
+        if indexes:
+            self.nmspolys = np.array(np.array(polys)[indexes] * reshape_ratio, np.int32)
+            self.nmsscores = np.array(confidences)[indexes]
+        else:
+            self.nmspolys = []
         return len(self.nmspolys)
 
     def showAll(self):

@@ -88,7 +88,7 @@ class SceneTextImage:
         return (polys, confidences)
 
     def detect(self):
-        self.original_image = cv2.imread(self.imageFile)
+        self.original_image = self.imread(self.imageFile)
         # preserve original image
         self.image = self.original_image.copy()
         h, w = self.image.shape[:2]
@@ -156,6 +156,13 @@ class SceneTextImage:
             cv2.imshow(self.winName, outimg)
             cv2.setWindowTitle(self.winName, f"Detected ({i+1}/{len_polys})")
             return cv2.waitKey(0)
+    def imread(self, imgPath):
+        img = cv2.imread(imgPath)
+        if img is None:
+            bytes = bytearray(open(imgPath, 'rb').read())
+            numpyarray = np.asarray(bytes, dtype=np.uint8)
+            img = cv2.imdecode(numpyarray, cv2.IMREAD_UNCHANGED)
+        return img
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

@@ -99,6 +99,9 @@ class SceneTextVideo(SceneTextImage.SceneTextImage):
                 self.nmsscores = np.array(confidences)[indexes]
 
                 cv2.polylines(frame, self.nmspolys, True, (0,0,255), 1)
+                for i in range(len(self.nmsscores)):
+                    poly = self.nmspolys[i]
+                    cv2.putText(frame, f"{self.nmsscores[i]*100:.2f}%", (poly[0,0], poly[0,1]+18), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,255), 1)
 
             cv2.imshow(self.winName, frame)
             key = cv2.waitKey(1) & 0xFF
@@ -126,21 +129,10 @@ class SceneTextVideo(SceneTextImage.SceneTextImage):
 
 
     def showAll(self):
-        # do nothing
         pass
 
     def show(self, i=-1):
-        if i < 0:
-            self.showAll()
-        else:
-            poly = self.nmspolys[i]
-            len_polys = len(self.nmspolys)
-            outimg = self.image.copy()
-            cv2.polylines(outimg, [poly], True, (0,0,255), 1)
-            cv2.putText(outimg, f"{self.nmsscores[i]*100:.2f}%", (poly[0,0], poly[0,1]+18), cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,255), 1)
-            cv2.imshow(self.winName, outimg)
-            cv2.setWindowTitle(self.winName, f"Detected ({i+1}/{len_polys})")
-            return cv2.waitKey(1)
+        pass
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
